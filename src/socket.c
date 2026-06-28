@@ -194,7 +194,9 @@ int FindSocket(int *fdp, int *nfoundp, int *notherp, char *match)
 			} else
 				cmatch = (*(n + matchlen) == 0);
 		}
-		sprintf(SocketPath + sdirlen, "/%s", name);
+        if (sdirlen + 1 + strlen(name) >= sizeof(SocketPath))
+            continue;   /* skip entry — path would be too long */
+        snprintf(SocketPath + sdirlen, sizeof(SocketPath) - sdirlen, "/%s", name);
 
 		errno = 0;
 		if (stat(SocketPath, &st)) {
