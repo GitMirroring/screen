@@ -1089,7 +1089,7 @@ static void FinishAttach(Message *m)
 	Activate(0);
 	ResetIdle();
 	if (!D_fore && !noshowwin)
-		ShowWindows(-1);
+		ShowWindows(NULL, -1);
 	if (displays->d_next == NULL && console_window) {
 		if (TtyGrabConsole(console_window->w_ptyfd, true, "reattach") == 0)
 			Msg(0, "console %s is on window %d", HostName, console_window->w_number);

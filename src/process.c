@@ -957,7 +957,7 @@ static void DoCommandMultiinput(struct action *act)
 			if (p)
 				p->w_miflag = p->w_miflag ? 0 : 1;
 			else
-				ShowWindows(n);
+				ShowWindows(act, n);
 		}
 	}
 
@@ -1570,7 +1570,7 @@ static void DoCommandWindows(struct action *act)
 	if (args[0])
 		ShowWindowsX(args[0]);
 	else
-		ShowWindows(-1);
+		ShowWindows(act, -1);
 }
 
 static void DoCommandVersion(struct action *act)
@@ -5778,7 +5778,7 @@ int IsNumColon(char *s, char *p, int psize)
 void SwitchWindow(Window *window)
 {
 	if (window == NULL) {
-		ShowWindows(-1);
+		ShowWindows(NULL, -1);
 		return;
 	}
 	if (display == NULL) {
@@ -6133,7 +6133,7 @@ char *AddOtherUsers(char *buf, int len, Window *p)
 /* Display window list as a message.  WHERE denotes the active window
  * number; if -1, then the active window will be determined using the
  * current foreground window, if available. */
-void ShowWindows(int where)
+void ShowWindows(struct action *act, int where)
 {
 	const char *buf, *s, *ss;
 
@@ -6159,7 +6159,10 @@ void ShowWindows(int where)
 		}
 	} else
 		ss = buf;
-	Msg(0, "%s", ss);
+	if (!act || !act->quiet)
+	    Msg(0, "%s", ss);
+	else if (queryflag >= 0)
+	    QueryMsg(0, "%s", ss);
 
 	wmbc_free(wmbc);
 	wmb_free(wmb);
